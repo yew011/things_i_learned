@@ -1,0 +1,23 @@
+How to override free for stats counting
+
+Instead of using hooks, we can do the following trick...
+
+1. define the following macro in the header file... (ideally, the header file
+   should be included by all .c files that call free)
+
+          #define free(x) rpl_free(x)
+
+2. implement rpl_free(x)
+
+             void
+             rpl_free(void *ptr)
+             {
+                /* Anything you want to run before free. */
+                #undef free
+                free(ptr);
+                #define free(x) rpl_free(x)
+             }
+
+   Note, another trick is to (free)(ptr);
+
+3. change all calls of 'free' via call-back pointer to 'rpl_free'
