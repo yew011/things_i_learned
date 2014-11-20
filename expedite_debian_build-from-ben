@@ -1,0 +1,10 @@
+Options to expedite Debian ovs build.
+
+First, turn on parallel building and turn off checking:
+DEB_BUILD_OPTIONS='parallel=8 nocheck'
+
+Second, once done an initial build, just go into the _debian directory
+and run "make" normally, then "scp" the binary to the target machine.
+
+That saves a bunch of time on subsequent builds, versus doing a full build
+and then copying the deb and installing it.
