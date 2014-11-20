@@ -1,0 +1,33 @@
+On why glibc only trim from the top of heap
+
+Ben:  There's a number of factors.
+      First, there's an assumption that if a program uses a certain amount of
+      memory at one given time, then it is likely to again allocate the same
+      amount of memory later.  Thus, it's better to keep it around rather
+      than to have to re-obtain the memory from the kernel later.  Second,
+      there's a cost (sometimes a high cost) to mapping and unmapping memory
+      regions.  I think that it's a relatively fixed cost regardless of the
+      number of pages, though, so the memory allocator is more willing to pay
+      that cost for large regions which is the reason for the mmap threshold.
+      Another reason for the mmap threshold is that the kernel's trakcing of
+      memory regions is somewhat expesnive.  I actually wrote a paper that
+      mentions that issue.  (in passing)
+
+
+me:  wow, could i get a pointer to the paper~?~
+
+
+Ben:  I'm not sure it's going to add any insight but you're welcome to it.
+      Let me find a link.
+      http://benpfaff.org/papers/libavl.pdf
+      section 5.1 in particular
+
+
+me:  cool, so the proper way to use malloc seem to be:
+     always malloc long lived chunks before the short lived ones,
+
+
+Ben:  That's ideal.
+      For very large chunks (above the mmap thresohld) the order doesn't
+      really matter.  Most programs don't have the same memory behavior as
+      OVS does in this situation, so glibc isn't optimized for it.
