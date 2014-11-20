@@ -1,0 +1,24 @@
+Ben's way of hacking/analyzing core dump when could not logon to
+user setup.
+
+
+1. run "objdump -x" on the core file and look for sections that
+   "look like" heaps.  (look at the 'program header' section)
+
+2. use "hd" to check that they really look like heaps.
+
+3. then run the "dump-heap" script on the heap segments.
+
+Ben:
+It's all very jury-rigged and unsystematic, but it often produces helpful
+results.  With some work, it could be made much more precise.
+
+Way to use:
+
+./dump-heap core.31202 0x000000000019906c 0x000000011c066ff0 0x000000000098e010
+
+The numbers in parentheses in the output are offsets of randomly selected
+examples of blocks of those sizes, so you can run the script multiple times
+and dump examples to examine.
+
+e.g. "hd core.31202 -n <blocksize> -s <offset>"
